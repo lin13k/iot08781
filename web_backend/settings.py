@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_jwt',
     'rest_framework.authtoken',
+    'django_extensions',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -131,4 +133,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+}
+
+GRAPH_MODELS = {
+    'all_applications': False,
+    'group_models': True,
 }
