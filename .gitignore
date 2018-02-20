@@ -1,1 +1,4 @@
-*.pyc
+*.py[cod]
+__pycache__/*
+*$py.class
+web_backend/__pycache__/*
