@@ -35,5 +35,5 @@ class ProfileViewSet(ModelViewSet):
         profile = get_object_or_404(self.get_queryset(), pk=pk)
         print(profile, profile.user, profile.pic, profile.pic_id)
         return Response({
-            'user_id': profile.user, 'pic': profile.pic if profile.pic else '',
-            'pic_id': profile.pic_id if profile.pic_id else ''})
+            'user_id': profile.user.id, 'pic': str(profile.pic) if profile.pic else '',
+            'pic_id': str(profile.pic_id) if profile.pic_id else ''})

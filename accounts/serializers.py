@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.RelatedField(read_only=True)
+    user = serializers.ReadOnlyField(read_only=True)
 
     class Meta:
         model = Profile

@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^api/verify/?$', verify_jwt_token, name='account-verify'),
     url(r'^api/profile/(?P<pk>[0-9]+)/?$',
         views.ProfileViewSet.as_view({
-            'post': 'retrieve',
+            'get': 'retrieve',
             'put': 'update',
         }), name='profile'),
 ]

@@ -1,4 +1,5 @@
 *.py[cod]
 __pycache__/*
 *$py.class
-web_backend/__pycache__/*
+/images/
+db.sqlite3
