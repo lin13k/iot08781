@@ -13,4 +13,9 @@ urlpatterns = [
             'get': 'retrieve',
             'put': 'update',
         }), name='profile'),
+    url(r'^api/photo/(\d+)/?$',
+        views.ProfilePhotoView.as_view(), name='photo'),
+    url(r'^api/id_photo/?$',
+        views.ProfileIDPhotoView.as_view(), name='id-photo'),
+
 ]
