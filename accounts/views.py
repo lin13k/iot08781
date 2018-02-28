@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework_jwt.views import ObtainJSONWebToken
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
 from accounts.serializers import UserSerializer, ProfileSerializer
@@ -8,10 +9,7 @@ from django.contrib.auth.models import User
 from .models import Profile
 
 
-class UserCreate(APIView):
-    """ 
-    Creates the user. 
-    """
+class UserCreate(ObtainJSONWebToken):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format='json'):
@@ -20,8 +18,8 @@ class UserCreate(APIView):
             user = serializer.save()
             Profile.objects.create(user=user)
             if user:
-                return Response(
-                    serializer.data, status=status.HTTP_201_CREATED)
+                return super(UserCreate, self).post(request, format='json')
+        return Response({'errors': serializer.errors})
 
 
 class ProfileViewSet(ModelViewSet):
@@ -35,5 +33,6 @@ class ProfileViewSet(ModelViewSet):
         profile = get_object_or_404(self.get_queryset(), pk=pk)
         print(profile, profile.user, profile.pic, profile.pic_id)
         return Response({
-            'user_id': profile.user.id, 'pic': str(profile.pic) if profile.pic else '',
+            'user_id': profile.user.id,
+            'pic': str(profile.pic) if profile.pic else '',
             'pic_id': str(profile.pic_id) if profile.pic_id else ''})
