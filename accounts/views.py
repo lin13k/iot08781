@@ -39,6 +39,11 @@ class ProfileViewSet(ModelViewSet):
             'pic': str(profile.pic) if profile.pic else '',
             'pic_id': str(profile.pic_id) if profile.pic_id else ''})
 
+    def update(self, request, pk=None):
+        print('update profile')
+        super(ProfileViewSet, self).update(request, pk=pk)
+        return self.retrieve(request, pk=pk)
+
 
 class ProfilePhotoView(APIView):
 
