@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
+from django.urls import reverse
 from .models import Profile
 
 
@@ -25,9 +26,32 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password')
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(read_only=True)
+class PublicProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    pic_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ('user', 'pic', 'pic_id')
+        fields = ('user', 'pic_url')
+
+    def get_pic_url(self, obj):
+        return self.context['request'].build_absolute_uri(
+            reverse('photo', args=[obj.user.id]))
+
+
+class PrivateProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    pic_url = serializers.SerializerMethodField(read_only=True)
+    pic_id_url = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('user', 'pic', 'pic_id', 'pic_url', 'pic_id_url')
+
+    def get_pic_url(self, obj):
+        return self.context['request'].build_absolute_uri(
+            reverse('photo', args=[obj.user.id]))
+
+    def get_pic_id_url(self, obj):
+        return self.context['request'].build_absolute_uri(
+            reverse('id-photo'))

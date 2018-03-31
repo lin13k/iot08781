@@ -1,12 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework_jwt.views import ObtainJSONWebToken
 from django.shortcuts import get_object_or_404, HttpResponse
-from rest_framework import status, permissions
-from accounts.serializers import UserSerializer, ProfileSerializer
+from rest_framework import permissions
+from accounts.serializers import *
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from mimetypes import guess_type
 from .models import Profile
 
@@ -24,25 +24,33 @@ class UserCreate(ObtainJSONWebToken):
         return Response({'errors': serializer.errors})
 
 
-class ProfileViewSet(ModelViewSet):
-    serializer_class = ProfileSerializer
+class PublicProfileViewSet(ModelViewSet):
+    serializer_class = PublicProfileSerializer
+    queryset = Profile.objects.all()
 
-    def get_queryset(self):
-        user = self.request.user
-        return Profile.objects.filter(user=user)
 
-    def retrieve(self, request, pk=None):
-        profile = get_object_or_404(self.get_queryset(), pk=pk)
-        print(profile, profile.user, profile.pic, profile.pic_id)
-        return Response({
-            'user_id': profile.user.id,
-            'pic': str(profile.pic) if profile.pic else '',
-            'pic_id': str(profile.pic_id) if profile.pic_id else ''})
+class PrivateProfileViewSet(ModelViewSet):
+    serializer_class = PrivateProfileSerializer
+    queryset = Profile.objects.all()
 
-    def update(self, request, pk=None):
-        print('update profile')
-        super(ProfileViewSet, self).update(request, pk=pk)
-        return self.retrieve(request, pk=pk)
+
+class PrivateProfileView(APIView):
+    renderer_classes = [BrowsableAPIRenderer, JSONRenderer]
+    serializer_class = PrivateProfileSerializer
+
+    def get(self, request):
+        pk = Profile.objects.filter(user=request.user)[0].pk
+        view = PrivateProfileViewSet.as_view({
+            'get': 'retrieve'
+        })
+        return view(request, pk=pk, action='retrieve')
+
+    def put(self, request):
+        pk = Profile.objects.filter(user=request.user)[0].pk
+        view = PrivateProfileViewSet.as_view({
+            'put': 'update'
+        })
+        return view(request, pk=pk, action='update')
 
 
 class ProfilePhotoView(APIView):

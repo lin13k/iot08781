@@ -9,10 +9,11 @@ urlpatterns = [
     url(r'^api/refresh/?$', refresh_jwt_token, name='account-refresh'),
     url(r'^api/verify/?$', verify_jwt_token, name='account-verify'),
     url(r'^api/profile/(?P<pk>[0-9]+)/?$',
-        views.ProfileViewSet.as_view({
+        views.PublicProfileViewSet.as_view({
             'get': 'retrieve',
-            'put': 'update',
-        }), name='profile'),
+        }), name='public-profile'),
+    url(r'^api/profile/?$',
+        views.PrivateProfileView.as_view(), name='private-profile'),
     url(r'^api/photo/(\d+)/?$',
         views.ProfilePhotoView.as_view(), name='photo'),
     url(r'^api/id_photo/?$',
