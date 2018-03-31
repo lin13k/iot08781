@@ -43,11 +43,13 @@ INSTALLED_APPS = [
     'django_extensions',
     'we_help',
     'accounts',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -144,5 +146,20 @@ GRAPH_MODELS = {
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': timedelta(seconds=3600),
+    'JWT_EXPIRATION_DELTA': timedelta(seconds=96000),
 }
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+    'localhost:8000',
+)
+
+CSRF_TRUSTED_ORIGINS = (
+    'localhost:3000',
+    'localhost:8000',
+)
+
+CORS_ALLOW_CREDENTIALS = True
