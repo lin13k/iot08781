@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'we_help',
     'accounts',
     'corsheaders',
+    'geopy',
 ]
 
 MIDDLEWARE = [
@@ -163,3 +164,6 @@ CSRF_TRUSTED_ORIGINS = (
 )
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+GOOGLE_API_KEY = 'AIzaSyCp3GAzcD-qGZyhbkRaSD464Z4xnXJGC9k'
