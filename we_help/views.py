@@ -1,13 +1,21 @@
 from rest_framework.viewsets import ModelViewSet
-from we_help.serializers import EventSerializer
+from rest_framework.views import APIView
+from we_help import serializers
 from we_help.models import Event
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
+from django.db.models import Q
 
 
-class EventView(ModelViewSet):
-    serializer_class = EventSerializer
+class NearByEventViewSet(ModelViewSet):
     queryset = Event.objects.all()
+
+    def get_serializer_class(self):
+        print('get serializer_class', self.action)
+        if self.action == 'list':
+            return serializers.EventSerializerWithoutSignupsForRead
+        else:
+            return serializers.EventSerializerWithoutSignups
 
     def list(self, request):
         print(request.GET)
@@ -18,7 +26,37 @@ class EventView(ModelViewSet):
         longitude = float(request.GET['longitude'])
         latitude = float(request.GET['latitude'])
 
-        queryset = Event.objects.near(latitude, longitude, 10)
-        serializer = EventSerializer(queryset, many=True)
+        self.queryset = Event.objects.near(latitude, longitude, 10)
+        return super().list(request)
 
-        return Response(serializer.data)
+
+class CreatedEventViewSet(ModelViewSet):
+    serializer_class = serializers.EventSerializerWithSignups
+
+    def get_serializer_class(self):
+        print('get serializer_class', self.action)
+        if self.action in ('list', 'retrieve'):
+            return serializers.EventSerializerWithSignupsForRead
+        else:
+            return serializers.EventSerializerWithSignups
+
+    def get_queryset(self):
+        return Event.objects.filter(create_user=self.request.user)
+
+
+class SignedEventViewSet(ModelViewSet):
+    serializer_class = serializers.EventSerializerWithoutSignups
+
+    def get_queryset(self):
+        return Event.objects.filter(Q(signups__signup_user=self.request.user))
+
+
+# class SignupEventView(APIView):
+#     serializer_class = serializers.SignUpSerializerForRead
+
+#     def get_serializer_class(self):
+#         if self.action == ':
+#             pass
+
+#     def post(self, request, pk):
+
