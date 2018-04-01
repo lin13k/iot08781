@@ -13,7 +13,6 @@ from .models import Profile
 
 class UserCreate(ObtainJSONWebToken):
     permission_classes = (permissions.AllowAny,)
-    serializer_class = UserSerializer
 
     def post(self, request, format='json'):
         serializer = UserSerializer(data=request.data)
