@@ -11,8 +11,9 @@ from mimetypes import guess_type
 from .models import Profile
 
 
-class UserCreate(ObtainJSONWebToken):
+class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
+    serializer_class = UserSerializer
 
     def post(self, request, format='json'):
         serializer = UserSerializer(data=request.data)
@@ -20,7 +21,9 @@ class UserCreate(ObtainJSONWebToken):
             user = serializer.save()
             Profile.objects.create(user=user)
             if user:
-                return super(UserCreate, self).post(request, format='json')
+                tokenView = ObtainJSONWebToken()
+                tokenView.request = request
+                return tokenView.post(request, format='json')
         return Response({'errors': serializer.errors})
 
 
