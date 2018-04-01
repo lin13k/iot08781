@@ -1,8 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from we_help import serializers
-from we_help.models import Event
-from rest_framework.exceptions import APIException
+from we_help.models import Event, SignUp
+from django.shortcuts import get_object_or_404
+# from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from django.db.models import Q
 
@@ -52,14 +53,22 @@ class SignedEventViewSet(ModelViewSet):
 
 
 class SignupEventView(APIView):
-    serializer_class = serializers.SignUpSerializerForRead
+    # serializer_class = serializers.SignUpSerializer
 
     # def get_serializer_class(self):
     #     if self.action == ':
     #         pass
 
-    # def get(self, request, pk):
-    #     return Response('Use post method to sign up event')
+    def get(self, request, pk):
+        return Response({'error': 'Use post method to sign up event'})
 
-    # def post(self, request, pk):
-        
+    def post(self, request, pk):
+        event = get_object_or_404(Event, id=pk)
+        if event.create_user == request.user:
+            return Response(
+                {'error': 'You cannot sign up your own event'}, 400)
+        if event in Event.objects.filter(
+                Q(signups__signup_user=self.request.user)):
+            return Response({'error': 'You already signed up this event'}, 400)
+        signup = SignUp.objects.create(event=event, signup_user=request.user)
+        return Response(serializers.SignUpSerializerForRead(signup).data)

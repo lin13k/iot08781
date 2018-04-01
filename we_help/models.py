@@ -97,7 +97,7 @@ class SignUp(models.Model):
         Event, on_delete=models.CASCADE, related_name='signups')
     signup_user = models.ForeignKey(
         "auth.User", on_delete=models.CASCADE, related_name='signups')
-    is_pick_up = models.TextField(max_length=10)
+    is_pick_up = models.TextField(max_length=10, default='no')
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
 
