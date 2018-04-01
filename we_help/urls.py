@@ -14,7 +14,7 @@ urlpatterns = [
         'put': 'update',
     }), name='event-detail'),
     url(r'^event/(?P<pk>[0-9]+)/signup/?$',
-        views.CreatedEventViewSet.as_view(), name='event-detail'),
+        views.SignupEventView.as_view(), name='event-signup'),
     url(r'^events/signed?$', views.SignedEventViewSet.as_view({
         'get': 'list',
     }), name='signed-event-list'),

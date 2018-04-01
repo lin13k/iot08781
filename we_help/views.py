@@ -51,12 +51,15 @@ class SignedEventViewSet(ModelViewSet):
         return Event.objects.filter(Q(signups__signup_user=self.request.user))
 
 
-# class SignupEventView(APIView):
-#     serializer_class = serializers.SignUpSerializerForRead
+class SignupEventView(APIView):
+    serializer_class = serializers.SignUpSerializerForRead
 
-#     def get_serializer_class(self):
-#         if self.action == ':
-#             pass
+    # def get_serializer_class(self):
+    #     if self.action == ':
+    #         pass
 
-#     def post(self, request, pk):
+    # def get(self, request, pk):
+    #     return Response('Use post method to sign up event')
 
+    # def post(self, request, pk):
+        
