@@ -21,8 +21,8 @@ class NearByEventViewSet(ModelViewSet):
     def list(self, request):
         print(request.GET)
         if 'longitude' not in request.GET or 'latitude' not in request.GET:
-            return Response(
-                'You must provide longitude and latitude.', 400)
+            return Response({'error':
+                             'You must provide longitude and latitude.'}, 400)
 
         longitude = float(request.GET['longitude'])
         latitude = float(request.GET['latitude'])
@@ -72,3 +72,13 @@ class SignupEventView(APIView):
             return Response({'error': 'You already signed up this event'}, 400)
         signup = SignUp.objects.create(event=event, signup_user=request.user)
         return Response(serializers.SignUpSerializerForRead(signup).data)
+
+    def delete(self, request, pk):
+        event = get_object_or_404(Event, id=pk)
+        signedEvents = Event.objects.filter(
+            Q(signups__signup_user=self.request.user))
+        if event not in signedEvents:
+            return Response(
+                {'error': 'You do not sign up this event yet'}, 400)
+        SignUp.objects.filter(event=event, signup_user=request.user).delete()
+        return Response({'message': 'delete the signup successfully'}, 200)
