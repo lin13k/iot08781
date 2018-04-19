@@ -80,7 +80,7 @@ class Event(BaseGeo):
     create_user = models.ForeignKey(
         "auth.User", on_delete=models.CASCADE, related_name='events')
     title = models.TextField(max_length=100)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=500, blank=True, null=True)
     close_time = models.DateTimeField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     duration = models.IntegerField(default=0)
