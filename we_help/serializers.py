@@ -5,13 +5,12 @@ from accounts.serializers import UserSerializer
 
 class EventSerializerWithoutSignups(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(read_only=True)
-    update_time = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Event
-        fields = ('id',
-                  'create_user', 'content', 'close_time',
-                  'create_time', 'update_time', 'duration',
+        fields = ('id', 'title', 'description',
+                  'create_user', 'close_time',
+                  'create_time', 'duration',
                   'longitude', 'latitude', 'address', 'place',
                   )
 
