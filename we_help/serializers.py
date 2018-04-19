@@ -10,7 +10,7 @@ class EventSerializerWithoutSignups(serializers.ModelSerializer):
         model = Event
         fields = ('id', 'title', 'description',
                   'create_user', 'close_time',
-                  'create_time', 'duration',
+                  'create_time', 'duration', 'reward',
                   'longitude', 'latitude', 'address', 'place',
                   )
 

@@ -84,6 +84,7 @@ class Event(BaseGeo):
     close_time = models.DateTimeField(null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     duration = models.IntegerField(default=0)
+    reward = models.TextField(max_length=500, blank=True, null=True)
 
 
 class EventImage(models.Model):
