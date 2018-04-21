@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from .models import Event, SignUp, Message
 from accounts.serializers import UserSerializer
+from django.contrib.auth.models import User
 
 
 class EventSerializerWithoutSignups(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(read_only=True)
+    create_user = serializers.PrimaryKeyRelatedField(
+        required=False, queryset=User.objects.all())
 
     class Meta:
         model = Event
@@ -62,7 +65,8 @@ class EventSerializerWithSignups(serializers.ModelSerializer):
 
 class EventSerializerWithSignupsForRead(EventSerializerWithSignups):
     create_user = UserSerializer()
-    signups = SignUpSerializerForRead(many=True)
+    signups = SignUpSerializerForRead(
+        many=True)
 
 
 class MessageSerializer(serializers.ModelSerializer):

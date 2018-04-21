@@ -30,6 +30,15 @@ class NearByEventViewSet(ModelViewSet):
         self.queryset = Event.objects.near(latitude, longitude, 10)
         return super().list(request)
 
+    def create(self, request):
+        eventData = dict(request.data)
+        eventData['create_user'] = request.user.id
+        s = self.get_serializer_class()(data=eventData)
+        if not s.is_valid():
+            return Response({'error': s.errors})
+        s.save()
+        return Response(s.data)
+
 
 class CreatedEventViewSet(ModelViewSet):
     serializer_class = serializers.EventSerializerWithSignups
