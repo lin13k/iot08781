@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'corsheaders',
     'geopy',
+    'drf_extra_fields',
 ]
 
 MIDDLEWARE = [

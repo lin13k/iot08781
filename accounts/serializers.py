@@ -3,9 +3,12 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Profile
+from drf_extra_fields.fields import Base64ImageField
 
 
 class UserCreateProfileSerializer(serializers.ModelSerializer):
+    pic = Base64ImageField(required=False)
+    pic_id = Base64ImageField(required=False)
 
     class Meta:
         model = Profile
