@@ -9,17 +9,21 @@ from accounts.serializers import *
 from django.contrib.auth.models import User
 from mimetypes import guess_type
 from .models import Profile
+from django.db import transaction
 
 
 class UserCreate(APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = UserSerializer
 
+    @transaction.atomic
     def post(self, request, format='json'):
+        # userData = dict(request.data)
+        # profileData = userData.pop('profile')
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            Profile.objects.create(user=user)
+            # Profile.objects.create(user=user)
             if user:
                 tokenView = ObtainJSONWebToken()
                 tokenView.request = request
