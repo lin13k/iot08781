@@ -25,4 +25,8 @@ urlpatterns = [
     url(r'^events/signed?$', views.SignedEventViewSet.as_view({
         'get': 'list',
     }), name='signed-event-list'),
+
+    url(r'^events/photo/(\d+)/?$',
+        views.EventPhotoView.as_view(), name='event-photo'),
+
 ]

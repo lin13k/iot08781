@@ -2,9 +2,9 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from we_help import serializers
 from we_help.models import Event, SignUp
-from django.shortcuts import get_object_or_404
-# from rest_framework.exceptions import APIException
+from django.shortcuts import get_object_or_404, HttpResponse
 from rest_framework.response import Response
+from mimetypes import guess_type
 from django.db.models import Q
 
 
@@ -103,3 +103,24 @@ class SignupEventView(APIView):
                 {'error': 'You do not sign up this event yet'}, 400)
         SignUp.objects.filter(event=event, signup_user=request.user).delete()
         return Response({'message': 'delete the signup successfully'}, 200)
+
+
+class EventPhotoView(APIView):
+
+    def get(self, request, id):
+        event = get_object_or_404(
+            Event, id=id)
+
+        # Probably don't need this check as form
+        # validation requires a picture be uploaded.
+        if not event.pic:
+            try:
+                with open('images/default.png', "rb") as f:
+                    return HttpResponse(f.read(), content_type="image/png")
+            except IOError:
+                response = HttpResponse(IOError.strerror, 400)
+                return response
+
+        return HttpResponse(event.pic, content_type=guess_type(
+            event.pic.name.split('/')[-1]
+        ))
