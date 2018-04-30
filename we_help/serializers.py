@@ -2,12 +2,14 @@ from rest_framework import serializers
 from .models import Event, SignUp, Message
 from accounts.serializers import UserSerializer
 from django.contrib.auth.models import User
+from drf_extra_fields.fields import Base64ImageField
 
 
 class EventSerializerWithoutSignups(serializers.ModelSerializer):
     create_time = serializers.DateTimeField(read_only=True)
     create_user = serializers.PrimaryKeyRelatedField(
         required=False, queryset=User.objects.all())
+    pic = Base64ImageField(required=False)
 
     class Meta:
         model = Event
@@ -15,6 +17,7 @@ class EventSerializerWithoutSignups(serializers.ModelSerializer):
                   'create_user', 'close_time',
                   'create_time', 'duration', 'reward',
                   'longitude', 'latitude', 'address', 'place',
+                  'status', 'pic',
                   )
 
 
@@ -38,17 +41,19 @@ class SignUpSerializerForRead(SignUpSerializer):
     signup_user = UserSerializer()
 
 
-class EventSerializerWithSignups(serializers.ModelSerializer):
+class EventSerializerWithSignups(EventSerializerWithoutSignups):
     create_time = serializers.DateTimeField(read_only=True)
-    update_time = serializers.DateTimeField(read_only=True)
     signups = SignUpSerializer(many=True)
+    pic = Base64ImageField(required=False)
 
     class Meta:
         model = Event
-        fields = ('id', 'signups',
-                  'create_user', 'content', 'close_time',
-                  'create_time', 'update_time', 'duration',
+        fields = ('id', 'title', 'description',
+                  'create_user', 'close_time',
+                  'create_time', 'duration', 'reward',
                   'longitude', 'latitude', 'address', 'place',
+                  'status', 'signups',
+                  'pic',
                   )
 
     def update(self, instance, validated_data):

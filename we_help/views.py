@@ -27,7 +27,13 @@ class NearByEventViewSet(ModelViewSet):
         longitude = float(request.GET['longitude'])
         latitude = float(request.GET['latitude'])
 
-        self.queryset = Event.objects.near(latitude, longitude, 10)
+        self.queryset = Event.objects.near(
+            latitude, longitude, 10).filter(
+            status=Event.OPEN).exclude(
+            create_user=request.user).exclude(
+            signups__signup_user=request.user
+        )
+
         return super().list(request)
 
     def create(self, request):
@@ -35,7 +41,7 @@ class NearByEventViewSet(ModelViewSet):
         eventData['create_user'] = request.user.id
         s = self.get_serializer_class()(data=eventData)
         if not s.is_valid():
-            return Response({'error': s.errors})
+            return Response({'error': s.errors}, 400)
         s.save()
         return Response(s.data)
 
@@ -51,14 +57,20 @@ class CreatedEventViewSet(ModelViewSet):
             return serializers.EventSerializerWithSignups
 
     def get_queryset(self):
-        return Event.objects.filter(create_user=self.request.user)
+        return Event.objects.filter(
+            ~Q(status=Event.CLOSED),
+            create_user=self.request.user,
+        )
 
 
 class SignedEventViewSet(ModelViewSet):
     serializer_class = serializers.EventSerializerWithoutSignups
 
     def get_queryset(self):
-        return Event.objects.filter(Q(signups__signup_user=self.request.user))
+        return Event.objects.filter(
+            Q(signups__signup_user=self.request.user),
+            ~Q(status=Event.CLOSED),
+        )
 
 
 class SignupEventView(APIView):

@@ -85,12 +85,25 @@ class Event(BaseGeo):
     create_time = models.DateTimeField(auto_now_add=True)
     duration = models.IntegerField(default=0)
     reward = models.TextField(max_length=500, blank=True, null=True)
+    OPEN = "OP"
+    CONFIRM = 'CF'
+    CLOSED = "CL"
+    STATUS_CHOICES = (
+        (OPEN, "OPEN"),
+        (CONFIRM, "CONFIRM"),
+        (CLOSED, "CLOSED"),
+    )
+    status = models.CharField(max_length=2,
+                              choices=STATUS_CHOICES,
+                              default=OPEN)
+    pic = models.FileField(
+        upload_to='images/event_pic', blank=True, default='')
 
 
-class EventImage(models.Model):
-    file = models.FileField(upload_to='images/event')
-    event = models.ForeignKey(
-        Event, on_delete=models.CASCADE, related_name='images')
+# class EventImage(models.Model):
+#     file = models.FileField(upload_to='images/event')
+#     event = models.ForeignKey(
+#         Event, on_delete=models.CASCADE, related_name='images')
 
 
 class SignUp(models.Model):

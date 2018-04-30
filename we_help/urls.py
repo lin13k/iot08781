@@ -9,8 +9,15 @@ urlpatterns = [
     url(r'^events/created?$', views.CreatedEventViewSet.as_view({
         'get': 'list',
     }), name='created-event-list'),
-    url(r'^event/(?P<pk>[0-9]+)/?$', views.CreatedEventViewSet.as_view({
+    url(r'^events/created/(?P<pk>[0-9]+)/?$',
+        views.CreatedEventViewSet.as_view({
+            'get': 'retrieve',
+            'patch': 'partial_update',
+            'put': 'update',
+        }), name='created-event-detail'),
+    url(r'^event/(?P<pk>[0-9]+)/?$', views.NearByEventViewSet.as_view({
         'get': 'retrieve',
+        'patch': 'partial_update',
         'put': 'update',
     }), name='event-detail'),
     url(r'^event/(?P<pk>[0-9]+)/signup/?$',
