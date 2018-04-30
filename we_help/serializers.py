@@ -60,6 +60,8 @@ class EventSerializerWithSignups(EventSerializerWithoutSignups):
         signupsData = validated_data.pop('signups', None)
         super().update(instance, validated_data)
         print(signupsData)
+        if not signupsData:
+            return instance
         for signup in signupsData:
             if 'id' in signup:
                 signupModel = SignUp.objects.get(id=signup['id'])
