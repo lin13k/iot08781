@@ -64,7 +64,7 @@ class CreatedEventViewSet(ModelViewSet):
 
 
 class SignedEventViewSet(ModelViewSet):
-    serializer_class = serializers.EventSerializerWithoutSignups
+    serializer_class = serializers.EventSerializerWithoutSignupsForRead
 
     def get_queryset(self):
         return Event.objects.filter(
