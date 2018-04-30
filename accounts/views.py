@@ -28,7 +28,7 @@ class UserCreate(APIView):
                 tokenView = ObtainJSONWebToken()
                 tokenView.request = request
                 return tokenView.post(request, format='json')
-        return Response({'errors': serializer.errors})
+        return Response({'errors': serializer.errors}, 400)
 
 
 class PublicProfileViewSet(ModelViewSet):
@@ -73,7 +73,7 @@ class ProfilePhotoView(APIView):
                 with open('images/default.png', "rb") as f:
                     return HttpResponse(f.read(), content_type="image/png")
             except IOError:
-                response = HttpResponse(IOError.strerror)
+                response = HttpResponse(IOError.strerror, 400)
                 return response
 
         return HttpResponse(profile.pic, content_type=guess_type(
@@ -94,7 +94,7 @@ class ProfileIDPhotoView(APIView):
                 with open('images/default.png', "rb") as f:
                     return HttpResponse(f.read(), content_type="image/png")
             except IOError:
-                response = HttpResponse(IOError.strerror)
+                response = HttpResponse(IOError.strerror, 400)
                 return response
 
         return HttpResponse(profile.pic_id, content_type=guess_type(
