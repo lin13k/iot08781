@@ -22,10 +22,14 @@ class EventSerializerWithoutSignups(serializers.ModelSerializer):
                   )
 
     def get_is_pick_up(self, obj):
-        return True if obj.signups.filter(
-            signup_user=self.context['request'].user,
-            is_pick_up=True,
-        ).exists() else False
+        request = self.context.get('request')
+        if request:
+            return True if obj.signups.filter(
+                signup_user=self.context['request'].user,
+                is_pick_up=True,
+            ).exists() else False
+        else:
+            return False
 
 
 class EventSerializerWithoutSignupsForRead(EventSerializerWithoutSignups):
