@@ -10,6 +10,7 @@ class EventSerializerWithoutSignups(serializers.ModelSerializer):
     create_user = serializers.PrimaryKeyRelatedField(
         required=False, queryset=User.objects.all())
     pic = Base64ImageField(required=False)
+    is_pick_up = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
@@ -17,8 +18,14 @@ class EventSerializerWithoutSignups(serializers.ModelSerializer):
                   'create_user', 'close_time',
                   'create_time', 'duration', 'reward',
                   'longitude', 'latitude', 'address', 'place',
-                  'status', 'pic',
+                  'status', 'pic', 'is_pick_up',
                   )
+
+    def get_is_pick_up(self, obj):
+        return True if obj.signups.filter(
+            signup_user=self.context['request'].user,
+            is_pick_up=True,
+        ).exists() else False
 
 
 class EventSerializerWithoutSignupsForRead(EventSerializerWithoutSignups):
@@ -68,6 +75,7 @@ class EventSerializerWithSignups(EventSerializerWithoutSignups):
                 signupModel.is_pick_up = signup['is_pick_up']
                 signupModel.save()
         return instance
+
 
 
 class EventSerializerWithSignupsForRead(EventSerializerWithSignups):
