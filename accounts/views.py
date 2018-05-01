@@ -61,6 +61,7 @@ class PrivateProfileView(APIView):
 
 
 class ProfilePhotoView(APIView):
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, id):
         profile = get_object_or_404(

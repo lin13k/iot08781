@@ -5,6 +5,7 @@ from we_help.models import Event, SignUp
 from django.shortcuts import get_object_or_404, HttpResponse
 from rest_framework.response import Response
 from mimetypes import guess_type
+from rest_framework import permissions
 from django.db.models import Q
 
 
@@ -106,6 +107,7 @@ class SignupEventView(APIView):
 
 
 class EventPhotoView(APIView):
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, id):
         event = get_object_or_404(
